@@ -15,26 +15,73 @@
     </nav>
 
     <main>
-        <h1>Cloudflare Pages</h1>
-        <article>
-            <h2>What is Cloudflare Pages?</h2>
-            <p>Cloudflare Pages is a JAMstack platform for building and deploying modern web applications. It provides a fast, secure, and scalable way to deploy static and dynamic sites directly from your Git repository.</p>
+        <article class="post">
+            <h1>Cloudflare Pages</h1>
+            
+            <p>Cloudflare Pages is a fast, free, and surprisingly painless way to host static sites. Think of it as GitHub Pages, but with fewer quirks and a lot more control. I ended up using it after bouncing between a few hosting options that either broke my .mobileconfig MIME type, forced sign‑ups, or tried to "helpfully" rewrite my headers into oblivion.</p>
+            
+            <p>Pages doesn't do that. It just serves what you give it — which is exactly what I needed.</p>
             
             <h2>Key Features</h2>
-            <ul>
-                <li><strong>Git Integration:</strong> Deploy automatically from GitHub, GitLab, or Gitea</li>
-                <li><strong>Zero Configuration:</strong> Works out of the box with popular frameworks</li>
-                <li><strong>Serverless Functions:</strong> Build APIs and backend logic with Workers</li>
-                <li><strong>Global CDN:</strong> Content served from 300+ cities worldwide</li>
-                <li><strong>Free Tier:</strong> Unlimited sites and deployments with generous free limits</li>
-                <li><strong>Custom Domains:</strong> Use your own domain or a pages.dev subdomain</li>
-            </ul>
             
-            <h2>Why Use Cloudflare Pages?</h2>
-            <p>Cloudflare Pages is perfect for hosting modern web applications, blogs, portfolios, and documentation sites. It eliminates the complexity of traditional hosting while providing enterprise-grade performance and security. With built-in DDoS protection, automatic HTTPS, and instant cache purging, you can focus on building great websites instead of managing infrastructure.</p>
+            <h3>⚡ Fast global CDN</h3>
+            <p>My files deploy to Cloudflare's edge network, which means they load quickly everywhere. Even when I was testing from a mobile hotspot, the response times were solid.</p>
+            
+            <h3>🔐 Built‑in SSL</h3>
+            <p>No configuration, no certificates, no fiddling. The moment your site goes live, HTTPS is already handled.</p>
+            
+            <h3>🔄 Git‑based deployments</h3>
+            <p>Every push to my GitHub repo triggers a new build. This was especially useful when I was iterating on my _headers file to get the correct MIME type for .mobileconfig.</p>
+            
+            <h3>🛠 Custom headers</h3>
+            <p>This is the feature that saved me. I dropped a _headers file into the repo, deployed, and Pages served the exact Content-Type I specified. No silent overrides. No "helpful" transformations. Just… correct behavior.</p>
+            
+            <h2>Why I Use It</h2>
+            
+            <h3>Performance without babysitting</h3>
+            <p>I don't have to think about caching, regions, or build servers. It just works, and it works everywhere.</p>
+            
+            <h3>Security by default</h3>
+            <p>Automatic SSL and Cloudflare's edge protections mean I don't have to worry about someone intercepting a config profile or messing with the delivery.</p>
+            
+            <h3>Zero friction</h3>
+            <p>I've used Netlify, GitHub Pages, and a few random "free static hosts." Cloudflare Pages is the only one that didn't fight me when I needed a very specific MIME type. When you're distributing a .mobileconfig, that matters.</p>
+            
+            <h2>My Workflow Example</h2>
+            
+            <p>Here's the exact flow I used when hosting my .mobileconfig file:</p>
+            
+            <ol>
+                <li><strong>Create a GitHub repo</strong> — Just a simple folder with my HTML, assets, and the .mobileconfig file.</li>
+                <li><strong>Add a _headers file</strong> — Mine looked like this:
+                    <pre><code>/profile.mobileconfig
+  Content-Type: application/x-apple-aspen-config</code></pre>
+                </li>
+                <li><strong>Connect the repo to Cloudflare Pages</strong> — One click, choose the repo, and Pages handles the rest.</li>
+                <li><strong>Deploy</strong> — Every push triggers a new build. I used this to test MIME types quickly — commit, push, test on iOS, repeat.</li>
+                <li><strong>Verify headers</strong> — I used PowerShell to confirm the server was returning the correct Content-Type. Pages passed on the first try.</li>
+                <li><strong>Test on iOS</strong> — The profile installed cleanly with no warnings, no corruption, and no "this file cannot be opened" errors.</li>
+            </ol>
+            
+            <p>This workflow took minutes, not hours, and required zero hacks.</p>
             
             <h2>Getting Started</h2>
-            <p>To get started with Cloudflare Pages, simply connect your Git repository, configure your build settings, and watch your site deploy automatically on every push. The platform supports frameworks like React, Vue, Next.js, Hugo, Jekyll, and many more.</p>
+            
+            <p>If you want to try it yourself:</p>
+            
+            <ol>
+                <li>Create a GitHub repo</li>
+                <li>Add your static files</li>
+                <li>Add a _headers file if you need custom MIME types</li>
+                <li>Connect the repo to Cloudflare Pages</li>
+                <li>Deploy and test</li>
+            </ol>
+            
+            <p>That's it. No YAML, no build scripts, no platform‑specific magic.</p>
+            
+            <h2>Final Thoughts</h2>
+            
+            <p>Cloudflare Pages has become my go‑to for hosting anything static — especially files that require precise headers. It's fast, predictable, and doesn't get in your way. I'll be writing more about my setup soon, including how I validated MIME types, how I structured the repo, and how I tested installation flows on iOS.</p>
         </article>
     </main>
 </body>
