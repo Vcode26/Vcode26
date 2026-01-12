@@ -1,38 +1,73 @@
-<!-- Fun Minigames Section -->
-<section id="minigames">
-  <h2>🎮 Bill Gates Minigames</h2>
-  <p>Play some fun, silly games inspired by tech history and Microsoft chaos.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Interactive presentation about Bill Gates with fun minigames." />
+  <title>Bill Gates Interactive</title>
 
-  <!-- Game 1: Click Bill -->
-  <div class="game" id="click-bill">
-    <h3>Click Bill!</h3>
-    <p>Click the Bill Gates emoji before it disappears.</p>
-    <div id="bill-target">🧑‍💻</div>
-    <p>Score: <span id="bill-score">0</span></p>
-  </div>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
 
-  <!-- Game 2: Fix the Bug -->
-  <div class="game" id="fix-bug">
-    <h3>Fix the Bug</h3>
-    <p>Drag the bug into the recycle bin before it crashes the page.</p>
-    <div class="drag-area">
-      <div id="bug" draggable="true">🐞</div>
-      <div id="bin">🗑️</div>
-    </div>
-    <p id="bug-status"></p>
-  </div>
+<body>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="../About/index.html">About</a>
+    <a href="./index.html">Posts</a>
+  </nav>
 
-  <!-- Game 3: Build Windows -->
-  <div class="game" id="build-windows">
-    <h3>Build Windows</h3>
-    <p>Stack falling windows without letting them topple.</p>
-    <div id="stack-area"></div>
-    <p id="stack-status"></p>
-  </div>
-</section>
+  <main>
+    <article class="post">
+      <h1>Bill Gates Interactive Presentation</h1>
 
-<!-- SCRIPT SHOULD BE AFTER ALL ELEMENTS -->
-<script>
+      <!-- Central Person Node -->
+      <section id="person-node">
+        <div class="person-circle">
+          <h2>Name of Person</h2>
+          <div class="person-image">
+            <img src="https://media.gettyimages.com/id/2212941381/photo/microsoft-co-founder-and-chair-of-the-gates-foundation-bill-gates-attends-a-session-during.jpg?s=612x612&amp;w=gi&amp;k=20&amp;c=xuPIikkUGA8YuBGTpHBUV2RpvryTg9Ii3YTt8bvMAOA=" alt="4,242 Bill Gates Co Stock Photos, High-Res Pictures, and Images - Getty  Images"/>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Buttons -->
+      <section id="info-buttons">
+        <button class="info-btn" data-target="childhood">About his Childhood</button>
+        <button class="info-btn" data-target="university">About his University Life</button>
+        <button class="info-btn" data-target="adult">About his Adult Life</button>
+        <button class="info-btn" data-target="why">Why I Chose This Person</button>
+      </section>
+
+      <!-- Info Windows (hidden by default) -->
+      <section id="info-windows">
+        <div class="info-window" id="childhood" hidden>
+          <h3>Childhood</h3>
+          <p>Bill Gates had a very competitive and rebellious childhood. He was born on Oct.28,1955. At Lakeside School, he did many rebellious things, like  jailbreaking the school computer to gain free computer time. Bill did many things as a kid.</p>
+        </div>
+
+        <div class="info-window" id="university" hidden>
+          <h3>University Life</h3>
+          <p>Bill had a very complex life at Harvard University. He played late-night poker in his dorm, Currier House. He met a friend, Steve Ballmer, and became close, despite many different interests. He enrolled in Harvard’s math course, Math 55, where he learned to be more humble by not being the top student in his class. Bill had a very complex and advanced life at Harvard.</p>
+        </div>
+
+        <div class="info-window" id="adult" hidden>
+          <h3>Adult Life</h3>
+          <p> Bill is doing many things as an adult . In 1975, he dropped out of Harvard and co-founded Microsoft with Paul Allen. In 1985, he launched Windows which became a big money-maker. In 2000, he stepped down from being a CEO but remains as the Co-Executive Chairman. He has done many things as an adult.</p>
+        </div>
+
+        <div class="info-window" id="why" hidden>
+          <h3>Why I Chose This Person</h3>
+          <p>I chose Bill Gates because he inspired me to create TBC.</p>
+        </div>
+      </section>
+
+      <!-- Fun Minigames Section -->
+      <section id="minigames">
+        <h2>🎮 Bill Gates Minigames</h2>
+        <p>Play some fun, silly games inspired by tech history and Microsoft chaos.</p>
+
+       <script>
   // Info button logic
   document.querySelectorAll(".info-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -109,3 +144,6 @@
 
   setInterval(dropBlock, 2000);
 </script>
+        </section>
+        </article>
+    </main>  
