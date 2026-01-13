@@ -21,44 +21,157 @@
     <article class="post">
       <h1>Bill Gates Interactive Presentation</h1>
 
-      <!-- Central Person Node -->
-      <section id="person-node">
-        <div class="person-circle">
-          <h2>Name of Person</h2>
-          <div class="person-image">
-            <img src="https://media.gettyimages.com/id/2212941381/photo/microsoft-co-founder-and-chair-of-the-gates-foundation-bill-gates-attends-a-session-during.jpg?s=612x612&amp;w=gi&amp;k=20&amp;c=xuPIikkUGA8YuBGTpHBUV2RpvryTg9Ii3YTt8bvMAOA=" alt="4,242 Bill Gates Co Stock Photos, High-Res Pictures, and Images - Getty  Images"/>
+      <!-- Orbit Container (Bill + Wheel share same center) -->
+      <section id="orbit-container">
+
+        <!-- Bill Gates Image -->
+        <div id="person-node">
+          <h2>Bill Gates</h2>
+          <img 
+            src="https://media.gettyimages.com/id/2212941381/photo/microsoft-co-founder-and-chair-of-the-gates-foundation-bill-gates-attends-a-session-during.jpg?s=612x612&w=gi&k=20&c=xuPIikkUGA8YuBGTpHBUV2RpvryTg9Ii3YTt8bvMAOA=" 
+            alt="Bill Gates"
+          />
+        </div>
+
+        <!-- Spinning Radial Menu -->
+        <div id="radial-menu">
+          <div class="wheel">
+            <button class="radial-btn" data-target="childhood">Childhood</button>
+            <button class="radial-btn" data-target="university">University</button>
+            <button class="radial-btn" data-target="adult">Adult Life</button>
+            <button class="radial-btn" data-target="why">Why Him?</button>
+            <button class="radial-btn" data-game="menu">Minigames</button>
           </div>
         </div>
+
       </section>
 
-      <!-- Interactive Buttons -->
-      <section id="info-buttons">
-        <button class="info-btn" data-target="childhood">About his Childhood</button>
-        <button class="info-btn" data-target="university">About his University Life</button>
-        <button class="info-btn" data-target="adult">About his Adult Life</button>
-        <button class="info-btn" data-target="why">Why I Chose This Person</button>
-      </section>
-
-      <!-- Info Windows (hidden by default) -->
-      <section id="info-windows">
-        <div class="info-window" id="childhood" hidden>
-          <h3>Childhood</h3>
-          <p>Bill Gates had a very competitive and rebellious childhood. He was born on Oct.28,1955. At Lakeside School, he did many rebellious things, like  jailbreaking the school computer to gain free computer time. Bill did many things as a kid.</p>
+      <!-- Hidden Info Sections -->
+      <section id="info-windows" hidden>
+        <div id="childhood">
+          <p>Bill Gates had a very competitive and rebellious childhood. He was born on Oct. 28, 1955. At Lakeside School, he did many rebellious things, like jailbreaking the school computer to gain free computer time.</p>
         </div>
 
-        <div class="info-window" id="university" hidden>
-          <h3>University Life</h3>
-          <p>Bill had a very complex life at Harvard University. He played late-night poker in his dorm, Currier House. He met a friend, Steve Ballmer, and became close, despite many different interests. He enrolled in Harvard’s math course, Math 55, where he learned to be more humble by not being the top student in his class. Bill had a very complex and advanced life at Harvard.</p>
+        <div id="university">
+          <p>Bill had a very complex life at Harvard University. He played late-night poker in his dorm, Currier House. He met Steve Ballmer and became close friends. He enrolled in Harvard’s Math 55, where he learned humility by not being the top student.</p>
         </div>
 
-        <div class="info-window" id="adult" hidden>
-          <h3>Adult Life</h3>
-          <p> Bill is doing many things as an adult . In 1975, he dropped out of Harvard and co-founded Microsoft with Paul Allen. In 1985, he launched Windows which became a big money-maker. In 2000, he stepped down from being a CEO but remains as the Co-Executive Chairman. He has done many things as an adult.</p>
+        <div id="adult">
+          <p>In 1975, he dropped out of Harvard and co-founded Microsoft with Paul Allen. In 1985, he launched Windows. In 2000, he stepped down as CEO but remains Co‑Executive Chairman.</p>
         </div>
 
-        <div class="info-window" id="why" hidden>
-          <h3>Why I Chose This Person</h3>
+        <div id="why">
           <p>I chose Bill Gates because he inspired me to create TBC.</p>
         </div>
       </section>
 
+    </article>
+
+    <!-- Logos -->
+    <img 
+      src="https://th.bing.com/th/id/OIP.zF-n020GEYyjTGKmydMkNAHaHh?w=174&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3" 
+      alt="Bill and Melinda Gates Foundation Logo" 
+      class="foundation-logo"
+    />
+
+    <img 
+      src="https://th.bing.com/th/id/OIP.ypmwvDgghTI_ALYLuzn_2wHaHa?w=176&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3" 
+      alt="Microsoft Logo" 
+      class="microsoft-logo"
+    />
+
+  </main>
+
+  <!-- JS: Info Alerts + Minigames -->
+  <script>
+    /* -------------------------
+       INFO BUTTON ALERTS
+    ------------------------- */
+    document.querySelectorAll(".radial-btn[data-target]").forEach(button => {
+      button.addEventListener("click", () => {
+        const targetId = button.dataset.target;
+        const content = document.querySelector(`#${targetId} p`).textContent.trim();
+        alert(content);
+      });
+    });
+
+    /* -------------------------
+       MINIGAME MENU
+    ------------------------- */
+    document.querySelector('[data-game="menu"]').addEventListener("click", () => {
+      const choice = prompt(
+        "Choose a minigame:\n1. Bill Gates Trivia Quiz\n2. Guess-the-Year\n3. Microsoft Logo Memory Game"
+      );
+
+      if (choice === "1") playTrivia();
+      else if (choice === "2") playGuessYear();
+      else if (choice === "3") playMemoryGame();
+      else alert("Invalid choice.");
+    });
+
+    /* -------------------------
+       TRIVIA QUIZ
+    ------------------------- */
+    function playTrivia() {
+      let score = 0;
+
+      const q1 = prompt("1. What year was Bill Gates born?\nA: 1955\nB: 1960\nC: 1949");
+      if (q1 && q1.toUpperCase() === "A") score++;
+
+      const q2 = prompt("2. What company did Bill Gates co-found?\nA: Apple\nB: Microsoft\nC: IBM");
+      if (q2 && q2.toUpperCase() === "B") score++;
+
+      const q3 = prompt("3. Who did Bill Gates co-found Microsoft with?\nA: Steve Jobs\nB: Paul Allen\nC: Steve Ballmer");
+      if (q3 && q3.toUpperCase() === "B") score++;
+
+      alert("You scored " + score + "/3!");
+    }
+
+    /* -------------------------
+       GUESS THE YEAR
+    ------------------------- */
+    function playGuessYear() {
+      const answer = 1975;
+      const guess = prompt("Guess the year Bill Gates founded Microsoft:");
+
+      if (!guess) return;
+
+      if (parseInt(guess) === answer) {
+        alert("Correct! Microsoft was founded in 1975.");
+      } else {
+        alert("Incorrect. The correct year was 1975.");
+      }
+    }
+
+    /* -------------------------
+       MEMORY GAME (WITH IMAGES)
+    ------------------------- */
+    function playMemoryGame() {
+      alert("Memory Game:\nYou will see 3 logos. Try to remember the order!");
+
+      // Replace these with your actual image URLs
+      const logos = [
+        { name: "Windows", img: "https://tse4.mm.bing.net/th?q=Windows+Logo+No+Background&w=120&h=120&c=1&rs=1&qlt=70&o=7&cb=1&dpr=1.3&pid=InlineBlock&rm=3&mkt=en-CA&cc=CA&setlang=en&adlt=strict&t=1&mw=247" },
+        { name: "Xbox", img: "https://tse4.mm.bing.net/th?q=Xbox+Logo+No+Background&w=120&h=120&c=1&rs=1&qlt=70&o=7&cb=1&dpr=1.3&pid=InlineBlock&rm=3&mkt=en-CA&cc=CA&setlang=en&adlt=strict&t=1&mw=247" },
+        { name: "Edge", img: "data:image/webp;base64,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" }
+      ];
+
+      const shuffled = logos.sort(() => Math.random() - 0.5);
+
+      // Show images one by one
+      alert("1st Logo:\n" + shuffled[0].name + "\n(IMAGE SHOWN HERE)");
+      alert("2nd Logo:\n" + shuffled[1].name + "\n(IMAGE SHOWN HERE)");
+      alert("3rd Logo:\n" + shuffled[2].name + "\n(IMAGE SHOWN HERE)");
+
+      const guess = prompt("What was the FIRST logo shown?\nWindows / Xbox / Edge");
+
+      if (guess && guess.toLowerCase() === shuffled[0].name.toLowerCase()) {
+        alert("Correct! You have a great memory.");
+      } else {
+        alert("Incorrect. The first logo was: " + shuffled[0].name);
+      }
+    }
+  </script>
+
+</body>
+</html>
