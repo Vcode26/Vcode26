@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>iPad Smart Assist</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --app-font: system-ui;
+      --theme-bg: #0f172a;
+      --theme-surface: #111827;
+      --theme-accent: #38bdf8;
+      --theme-text: #e5e7eb;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: var(--app-font);
+      background: radial-gradient(circle at top, #1e293b, #020617);
+      color: var(--theme-text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(15, 23, 42, 0.9);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header .left,
+    header .right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      margin: 0;
+      letter-spacing: 0.04em;
+    }
+
+    label {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    select, button, input, textarea {
+      font-family: inherit;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--theme-text);
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    button {
+      cursor: pointer;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38bdf8, #22c55e);
+      border: none;
+      color: #0b1120;
+      font-weight: 600;
+      padding-inline: 14px;
+    }
+
+    button.secondary {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--theme-text);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-weight: 500;
+    }
+
+    main { flex: 1; padding: 16px; }
+
+    #dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .widget {
+      position: relative;
+      background: var(--theme-surface);
+      border-radius: var(--radius);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 10px;
+      min-height: 80px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.7);
+      overflow: hidden;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(15, 23, 42, 0.9);
+      color: #f97373;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .clock-display {
+      font-size: 1.4rem;
+      text-align: center;
+      padding: 18px 4px 8px;
+      letter-spacing: 0.08em;
+    }
+
+    .weather-status {
+      font-size: 0.9rem;
+      padding-top: 18px;
+      text-align: center;
+    }
+
+    .notes-area {
+      width: 100%;
+      min-height: 120px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--theme-text);
+      padding: 8px;
+      font-size: 0.85rem;
+      resize: vertical;
+    }
+
+    .todo-input {
+      width: 100%;
+      margin-bottom: 6px;
+      border-radius: 999px;
+      padding-inline: 10px;
+      font-size: 0.85rem;
+    }
+
+    .todo-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+    }
+
+    .todo-list li {
+      padding: 4px 8px;
+      border-radius: 999px;
+      margin-bottom: 4px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      cursor: pointer;
+    }
+
+    .todo-list li.done {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+    .camera-thumb {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .widget-iframe {
+      width: 100%;
+      height: 220px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: #020617;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <h1>Smart Assist Dashboard</h1>
+    </div>
+
+    <div class="right">
+      <div>
+        <label for="fontSelect">Font</label>
+        <select id="fontSelect">
+          <option value="system-ui">System Default</option>
+          <option value="Arial, sans-serif">Arial</option>
+          <option value="'Comic Sans MS', cursive">Comic Sans</option>
+          <option value="'Times New Roman', serif">Times New Roman</option>
+          <option value="'Courier New', monospace">Courier</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="presetSelect">Add widget</label>
+        <select id="presetSelect">
+          <option value="">Choose…</option>
+          <option value="clock">Clock</option>
+          <option value="weather">Weather</option>
+          <option value="notes">Notes</option>
+          <option value="todo">To‑Do List</option>
+          <option value="camera">Camera Roll Viewer</option>
+          <option value="iframe">iFrame Embed</option>
+          <option value="minibrowser">Mini Browser</option>
+          <option value="calculator">Calculator</option>
+        </select>
+      </div>
+
+      <button id="kidModeBtn" class="secondary">Kid Mode: Off</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="dashboard"></div>
+  </main>
+
+  <footer>
+    Smart Assist • Preset widgets • HTML5 single file
+  </footer>
+
+  <script>
+    const fontSelect = document.getElementById("fontSelect");
+    fontSelect.addEventListener("change", () => {
+      document.documentElement.style.setProperty("--app-font", fontSelect.value);
+    });
+
+    let kidMode = false;
+    const kidBtn = document.getElementById("kidModeBtn");
+
+    function applyKidModeStyles(widget) {
+      if (!kidMode) return;
+      widget.style.borderRadius = "20px";
+      widget.style.fontSize = "1.05rem";
+    }
+
+    kidBtn.addEventListener("click", () => {
+      kidMode = !kidMode;
+      kidBtn.textContent = "Kid Mode: " + (kidMode ? "On" : "Off");
+      document.querySelectorAll(".widget").forEach(applyKidModeStyles);
+    });
+
+    const presets = {};
+
+    presets.clock = function () {
+      const el = document.createElement("div");
+      el.className = "widget";
+      el.innerHTML = `
+        <button class="delete-btn">×</button>
+        <div class="clock-display"></div>
+      `;
+      const display = el.querySelector(".clock-display");
+      const update = () => display.textContent = new Date().toLocaleTimeString();
+      update();
+      const interval = setInterval(update, 1000);
+      el._cleanup = () => clearInterval(interval);
+      return el;
+    };
+
+    presets.weather = function () {
+      const el = document.createElement("div");
+      el.className = "widget";
+      el.innerHTML = `
+        <button class="delete-btn">×</button>
+        <div class="weather-status">Loading weather...</div>
+      `;
+      const status = el.querySelector(".weather-status");
+
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        try {
+          const { latitude, longitude } = pos.coords;
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
+          const data = await fetch(url).then(r => r.json());
+          const w = data.current_weather;
+          status.textContent = `${w.temperature}°C • code ${w.weathercode}`;
+        } catch {
+          status.textContent = "Weather unavailable.";
+        }
+      }, () => {
+        status.textContent = "Location denied.";
+      });
+
+      return el;
+    };
+
+    presets.notes = function () {
+      const el = document.createElement("div");
+      el.className = "widget";
+      el.innerHTML = `
+        <button class="delete-btn">×</button>
+        <textarea class="notes-area" placeholder="Write notes..."></textarea>
+      `;
+      return el;
+    };
+
+    presets.todo = function () {
+      const el = document.createElement("div");
+      el.className = "widget";
+      el.innerHTML = `
+        <button class="delete-btn">×</button>
+        <input class="todo-input" placeholder="Add task">
+        <ul class="todo-list"></ul>
+      `;
+      const input = el.querySelector(".todo-input");
+      const list = el.querySelector(".todo-list");
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && input.value.trim()) {
+          const li = document.createElement("li");
+          li.textContent = input.value.trim();
+          li.addEventListener("click", () => li.classList.toggle("done"));
+          list.appendChild(li);
+          input.value = "";
+        }
+      });
+
+      return el;
+    };
+
+    presets.camera = function () {
+      const el = document.createElement("div");
+      el.className = "widget";
+      el.innerHTML = `
+        <button class="delete-btn">×</button>
+        <input type="file" accept="image/*" multiple class="camera-input">
+        <div class="camera-preview"></div>
+      `;
+      const input = el.querySelector(".camera-input");
+      const preview = el.querySelector(".camera-preview");
+
+      input.addEventListener("change", () => {
+        preview.innerHTML = "";
+        [...input.files].forEach(file => {
+          const img = document.createElement("img");
+          img.src = URL.createObjectURL(file);
+          img.className = "camera-thumb";
+          preview.appendChild(img);
+        });
+      });
+
+      return el;
+    };
+
+    presets.iframe = function () {
+      const url = prompt("Enter a URL to embed:");
+      if (!url) return null;
+      const el = document.createElement("div");
+      el.className = "widget";
+      el.innerHTML = `
+        <button class="delete-btn">×</button>
+        <iframe src="${url}" class="widget-iframe"></iframe>
+      `;
+      return el;
+    };
+
+    presets.minibrowser = function () {
+      const el = document.createElement("div");
+      el.className = "widget";
+      el.innerHTML = `
+        <button class="delete-btn">×</button>
+        <iframe class="widget-iframe" src="about:blank">https://appetize.io/embed/b_kyqueia5m6h2xx4cestlaanu3y?device=pixel8&launchUrl=exp%3A%2F%2Fu.expo.dev%2F933fd9c0-1666-11e7-afca-d980795c5824%3Fruntime-version%3Dexposdk%253A53.0.0%26channel-name%3Dproduction%26snack%3D%2540viaan_isaac%252Fwemulate%26snack-channel%3DyHEJbrOerM&params=%7B%22EXDevMenuDisableAutoLaunch%22%3Atrue%2C%22EXKernelDisableNuxDefaultsKey%22%3Atrue%7D&appearance=light&deviceColor=black&scale=auto&orientation=portrait&centered=both</iframe>
+      `;
+      return el;
+    };
+
+    presets.calculator = function () {
+      const el = document.createElement("div");
+      el.className = "widget";
+      el.innerHTML = `
+        <button class="delete-btn">×</button>
+        <input class="calc-display" disabled>
+        <div class="calc-buttons">
+          ${["7","8","9","/","4","5","6","*","1","2","3","-","0",".","=","+"]
+            .map(b => `<button>${b}</button>`).join("")}
+        </div>
+      `;
+      const display = el.querySelector(".calc-display");
+      const buttons = el.querySelectorAll(".calc-buttons button");
+
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const v = btn.textContent;
+          if (v === "=") {
+            try {
+              display.value = eval(display.value || "0");
+            } catch {
+              display.value = "Error";
+            }
+          } else {
+            display.value += v;
+          }
+        });
+      });
+
+      return el;
+    };
+
+    const dashboard = document.getElementById("dashboard");
+    const presetSelect = document.getElementById("presetSelect");
+
+    function addPresetWidget(type) {
+      const factory = presets[type];
+      if (!factory) return;
+      const widget = factory();
+      if (!widget) return;
+      applyKidModeStyles(widget);
+      dashboard.appendChild(widget);
+    }
+
+    presetSelect.addEventListener("change", () => {
+      const type = presetSelect.value;
+      if (!type) return;
+      addPresetWidget(type);
+      presetSelect.value = "";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (e.target.classList.contains("delete-btn")) {
+        const widget = e.target.closest(".widget");
+        if (widget && widget._cleanup) widget._cleanup();
+        widget?.remove();
+      }
+    });
+
+    addPresetWidget("clock");
+    addPresetWidget("notes");
+  </script>
+</body>
+</html>
