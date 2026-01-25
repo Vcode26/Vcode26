@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VBI Math Buddy</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, sans-serif;
+      background: #0d0d0d;
+      color: #e6e6e6;
+      text-align: center;
+    }
+
+    header {
+      padding: 30px 0;
+      background: #111;
+      border-bottom: 1px solid #222;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.4rem;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    nav {
+      margin-top: 10px;
+      font-size: 1.1rem;
+    }
+
+    nav a {
+      color: #4da3ff;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .content {
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 40px;
+    }
+
+    p {
+      line-height: 1.6;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>VBI Math Buddy</h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="content">
+    <h2>About VBI Math Buddy</h2>
+    <p>VBI Math Buddy is a comprehensive math learning tool designed to help students master mathematical concepts through AI-powered assistance. Here is it.</p>
+<!-- MathBuddy Chatbot Embed -->
+<iframe
+  id="mathbuddy-chatbot"
+  src="https://chatbot.getmindpal.com/mathbuddy"
+  allow="clipboard-read; clipboard-write; microphone"
+  style="width: 100%; height: 100%; min-height: 700px"
+></iframe>
+
+<script>
+  // Create or load a persistent user ID
+  function getOrCreateUserId() {
+    // Check if we already saved an ID
+    let id = localStorage.getItem("mathbuddy_user_id");
+
+    // If not, make a new one
+    if (!id) {
+      const random = Math.random().toString(36).substring(2, 12);
+      id = "user_" + random;
+      localStorage.setItem("mathbuddy_user_id", id);
+    }
+
+    return id;
+  }
+
+  window.mindpalIframeConfig = {
+    "mathbuddy-chatbot": {
+      customUserId: getOrCreateUserId()
+    }
+  };
+</script>
+
+<script
+  src="https://chatbot.getmindpal.com/iframe.min.js"
+  data-target="mathbuddy-chatbot"
+></script>
+
+    <h2>Contact Us</h2>
+    <p>If you have any questions or feedback, feel free to reach out to us at viaandev@icloud.com.</p>
+  </div>
+
+</body>
+
+</html>
