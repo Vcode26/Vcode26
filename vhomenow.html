@@ -2,112 +2,166 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>VBI FOSS Hub</title>
-  <link rel="icon" href="assets/VBI iOS FOSS Hub Favicon.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartAssist Settings</title>
 
   <style>
     body {
+      font-family: Inter, Arial, sans-serif;
+      background: #f0f2f6;
       margin: 0;
       padding: 0;
-      font-family: system-ui, sans-serif;
-      background: #0d0d0d;
-      color: #e6e6e6;
-      text-align: center;
     }
 
     header {
-      padding: 30px 0;
-      background: #111;
-      border-bottom: 1px solid #222;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2.4rem;
-      letter-spacing: 1px;
-      font-weight: 700;
-    }
-
-    nav {
-      margin-top: 10px;
-      font-size: 1.1rem;
-    }
-
-    nav a {
-      color: #4da3ff;
-      text-decoration: none;
-      margin: 0 10px;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .app-card {
-      background: #141414;
-      border: 1px solid #222;
-      border-radius: 12px;
+      background: #4a6cf7;
+      color: white;
       padding: 20px;
-      margin: 25px auto;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
     }
 
-    .app-card h3 {
+    .settings-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    }
+
+    h2 {
       margin-top: 0;
-      font-size: 1.6rem;
+      color: #333;
     }
 
-    .app-card a {
+    .section {
+      margin-bottom: 35px;
+    }
+
+    label {
       display: block;
-      margin: 8px 0;
-      color: #4da3ff;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    select, input[type="checkbox"] {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .widget-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .widget-item {
+      background: #f7f9fc;
+      padding: 12px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #e1e4ea;
+    }
+
+    .save-btn {
+      background: #4a6cf7;
+      color: white;
+      padding: 14px 22px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
       font-size: 1.1rem;
-      text-decoration: none;
+      font-weight: 600;
     }
 
-    .app-card a:hover {
-      text-decoration: underline;
-    }
-
-    p {
-      font-size: 0.95rem;
-      color: #bfbfbf;
+    .save-btn:hover {
+      background: #3a57d8;
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <h1>VBI FOSS Hub</h1>
-    <nav>
-      <a href="../index.html">Home</a> |
-      <a href="https://vbifoss.pages.dev/Devconnect">Devconnect</a>
-    </nav>
-  </header>
+<header>SmartAssist — Settings</header>
 
-  <div class="app-card">
-    <h3>BlueLive Search</h3>
-    <a href="https://vbifoss.pages.dev/BlueLiveSearch">Get App</a>
-    <a href="https://github.com/Vcode26/VBI-iOS-FOSS-Hub/blob/6d5e57472932732639838ec848a35e87e789a3b9/BlueLiveSearch/vsaechuj.mobileconfig">View Code</a>
+<div class="settings-container">
+
+  <div class="section">
+    <h2>Appearance</h2>
+
+    <label for="theme">Theme</label>
+    <select id="theme">
+      <option>Light</option>
+      <option>Dark</option>
+      <option>Midnight</option>
+      <option>Solarized</option>
+    </select>
+
+    <br><br>
+
+    <label for="font">Font Style</label>
+    <select id="font">
+      <option>Inter</option>
+      <option>Roboto</option>
+      <option>Segoe UI</option>
+      <option>Georgia</option>
+      <option>Monospace</option>
+    </select>
   </div>
 
-  <div class="app-card">
-    <h3>TTS King</h3>
-    <a href="https://vbifoss.pages.dev/TTSking.shortcut">Get App</a>
-    <a href="https://vbifoss.pages.dev/TTSking_V2.0.shortcut">Get App V2.0</a>
-    <a href="https://github.com/vcode26/VBI-iOS-FOSS-Hub/blob/TTSking.shortcut">View Code</a>
-    <p>Once opened, tap the icon → Export File → Add to Home Screen.</p>
+  <div class="section">
+    <h2>Widgets</h2>
+    <p>Enable or disable SmartAssist dashboard widgets.</p>
+
+    <div class="widget-list">
+      <div class="widget-item">
+        <input type="checkbox" id="weather" checked>
+        <label for="weather">Weather</label>
+      </div>
+
+      <div class="widget-item">
+        <input type="checkbox" id="calendar" checked>
+        <label for="calendar">Calendar</label>
+      </div>
+
+      <div class="widget-item">
+        <input type="checkbox" id="news">
+        <label for="news">News Feed</label>
+      </div>
+
+      <div class="widget-item">
+        <input type="checkbox" id="tasks">
+        <label for="tasks">Tasks</label>
+      </div>
+
+      <div class="widget-item">
+        <input type="checkbox" id="music">
+        <label for="music">Music Controls</label>
+      </div>
+
+      <div class="widget-item">
+        <input type="checkbox" id="aiTips">
+        <label for="aiTips">AI Tips</label>
+      </div>
+    </div>
   </div>
 
-  <div class="app-card">
-    <h3>VHome Now</h3>
-    <a href="https://vbifoss.pages.dev/VHomeNow">Get App</a>
-    <a href="https://github.com/Vcode26/VBI-iOS-FOSS-Hub/tree/main/VHomeNow">View Code</a>
-    <p>Install the profile, then add the WebClip to your Home Screen.</p>
-  </div>
+  <button class="save-btn" onclick="saveSettings()">Save Settings</button>
+
+</div>
+
+<script>
+  function saveSettings() {
+    alert("Settings saved!");
+  }
+</script>
 
 </body>
 </html>
