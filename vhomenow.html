@@ -1,167 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartAssist Settings</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Dashboard</title>
 
-  <style>
-    body {
-      font-family: Inter, Arial, sans-serif;
-      background: #f0f2f6;
-      margin: 0;
-      padding: 0;
-    }
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+        }
 
-    header {
-      background: #4a6cf7;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      font-size: 1.8rem;
-      font-weight: bold;
-    }
+        .topbar {
+            background: #111827;
+            color: white;
+            padding: 1rem 2rem;
+        }
 
-    .settings-container {
-      max-width: 900px;
-      margin: 40px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 14px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-    }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
 
-    h2 {
-      margin-top: 0;
-      color: #333;
-    }
+        .widget {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-    .section {
-      margin-bottom: 35px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
-    select, input[type="checkbox"] {
-      padding: 10px;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    .widget-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .widget-item {
-      background: #f7f9fc;
-      padding: 12px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border: 1px solid #e1e4ea;
-    }
-
-    .save-btn {
-      background: #4a6cf7;
-      color: white;
-      padding: 14px 22px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-
-    .save-btn:hover {
-      background: #3a57d8;
-    }
-  </style>
+        .widget h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+    </style>
 </head>
 
 <body>
 
-<header>SmartAssist — Settings</header>
+    <header class="topbar">
+        <h1>Home Dashboard</h1>
+    </header>
 
-<div class="settings-container">
+    <main id="dashboard" class="dashboard-grid"></main>
 
-  <div class="section">
-    <h2>Appearance</h2>
+    <script>
+        // Global widget registry
+        const widgetRegistry = [];
 
-    <label for="theme">Theme</label>
-    <select id="theme">
-      <option>Light</option>
-      <option>Dark</option>
-      <option>Midnight</option>
-      <option>Solarized</option>
-    </select>
+        // Register a widget
+        function registerWidget(name, renderFn) {
+            widgetRegistry.push({ name, renderFn });
+        }
 
-    <br><br>
+        // Clock Widget
+        registerWidget("Clock", () => {
+            const el = document.createElement("div");
+            el.className = "widget";
+            el.innerHTML = `
+                <h2>Clock</h2>
+                <div id="clockDisplay" style="font-size: 2rem;"></div>
+            `;
+            setInterval(() => {
+                el.querySelector("#clockDisplay").textContent =
+                    new Date().toLocaleTimeString();
+            }, 1000);
+            return el;
+        });
 
-    <label for="font">Font Style</label>
-    <select id="font">
-      <option>Inter</option>
-      <option>Roboto</option>
-      <option>Segoe UI</option>
-      <option>Georgia</option>
-      <option>Monospace</option>
-    </select>
-  </div>
+        // Notes Widget
+        registerWidget("Notes", () => {
+            const el = document.createElement("div");
+            el.className = "widget";
+            el.innerHTML = `
+                <h2>Notes</h2>
+                <textarea style="width:100%;height:120px;border-radius:8px;padding:10px;"></textarea>
+            `;
+            return el;
+        });
 
-  <div class="section">
-    <h2>Widgets</h2>
-    <p>Enable or disable SmartAssist dashboard widgets.</p>
+        // Weather Placeholder Widget
+        registerWidget("Weather", () => {
+            const el = document.createElement("div");
+            el.className = "widget";
+            el.innerHTML = `
+                <h2>Weather</h2>
+                <p>Weather API goes here...</p>
+            `;
+            return el;
+        });
 
-    <div class="widget-list">
-      <div class="widget-item">
-        <input type="checkbox" id="weather" checked>
-        <label for="weather">Weather</label>
-      </div>
+        // Render Dashboard
+        window.onload = () => {
+            const dashboard = document.getElementById("dashboard");
 
-      <div class="widget-item">
-        <input type="checkbox" id="calendar" checked>
-        <label for="calendar">Calendar</label>
-      </div>
-
-      <div class="widget-item">
-        <input type="checkbox" id="news">
-        <label for="news">News Feed</label>
-      </div>
-
-      <div class="widget-item">
-        <input type="checkbox" id="tasks">
-        <label for="tasks">Tasks</label>
-      </div>
-
-      <div class="widget-item">
-        <input type="checkbox" id="music">
-        <label for="music">Music Controls</label>
-      </div>
-
-      <div class="widget-item">
-        <input type="checkbox" id="aiTips">
-        <label for="aiTips">AI Tips</label>
-      </div>
-    </div>
-  </div>
-
-  <button class="save-btn" onclick="saveSettings()">Save Settings</button>
-
-</div>
-
-<script>
-  function saveSettings() {
-    alert("Settings saved!");
-  }
-</script>
+            widgetRegistry.forEach(widget => {
+                const widgetElement = widget.renderFn();
+                dashboard.appendChild(widgetElement);
+            });
+        };
+    </script>
 
 </body>
 </html>
