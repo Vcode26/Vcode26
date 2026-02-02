@@ -85,11 +85,11 @@
   <label><input type="checkbox" id="tasksToggle"> Tasks</label><br>
   <label><input type="checkbox" id="musicToggle"> Music</label><br>
   <label><input type="checkbox" id="aiTipsToggle"> AI Tips</label><br>
-  <label><input type="checkbox" id="iframeToggle"> Custom iFrame</label><br>
   <br>
-  <label>Custom iFrame URL:</label>
-  <input id="iframeUrl" type="text" style="width:100%" placeholder="https://example.com">
-  <br><br>
+  <h3>iFrames</h3>
+  <button id="addIframeBtn">Add iFrame</button>
+  <div id="iframeList" style="font-size:13px;margin-top:8px;"></div>
+  <br>
   <label><input type="checkbox" id="kidsModeToggle"> Kids Mode (Disable AI)</label>
   <br><br>
   <button id="saveSettings">Save Settings</button>
@@ -101,9 +101,10 @@ let settings=JSON.parse(localStorage.getItem("vHomeSettings"))||{
   theme:"blue",
   font:"Inter",
   widgets:{},
-  iframeUrl:"",
+  iframes:[],
   kidsMode:false
 };
+if(!Array.isArray(settings.iframes))settings.iframes=[];
 let widgetPositions=JSON.parse(localStorage.getItem("vHomeWidgetPositions"))||{};
 let widgetSizes=JSON.parse(localStorage.getItem("vHomeWidgetSizes"))||{};
 const dashboard=document.getElementById("dashboard");
@@ -126,15 +127,46 @@ document.getElementById("newsToggle").checked=settings.widgets.news||false;
 document.getElementById("tasksToggle").checked=settings.widgets.tasks||false;
 document.getElementById("musicToggle").checked=settings.widgets.music||false;
 document.getElementById("aiTipsToggle").checked=settings.widgets.aiTips||false;
-document.getElementById("iframeToggle").checked=settings.widgets.iframeWidget||false;
-document.getElementById("iframeUrl").value=settings.iframeUrl||"";
 document.getElementById("kidsModeToggle").checked=settings.kidsMode||false;
+
+function renderIframeList(){
+  const list=document.getElementById("iframeList");
+  list.innerHTML="";
+  settings.iframes.forEach((url,i)=>{
+    const row=document.createElement("div");
+    row.style.marginBottom="6px";
+    row.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${url}</span>
+        <button data-i="${i}" class="removeIframeBtn" style="font-size:11px;">Remove</button>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+  document.querySelectorAll(".removeIframeBtn").forEach(btn=>{
+    btn.onclick=()=>{
+      const index=parseInt(btn.dataset.i);
+      settings.iframes.splice(index,1);
+      localStorage.setItem("vHomeSettings",JSON.stringify(settings));
+      location.reload();
+    };
+  });
+}
+renderIframeList();
+
+document.getElementById("addIframeBtn").onclick=()=>{
+  const url=prompt("Enter iFrame URL:");
+  if(!url)return;
+  settings.iframes.push(url);
+  localStorage.setItem("vHomeSettings",JSON.stringify(settings));
+  location.reload();
+};
 
 document.getElementById("saveSettings").onclick=()=>{
   settings={
     theme:document.getElementById("themeSelect").value,
     font:document.getElementById("fontSelect").value,
-    iframeUrl:document.getElementById("iframeUrl").value,
+    iframes:settings.iframes,
     kidsMode:document.getElementById("kidsModeToggle").checked,
     widgets:{
       time:document.getElementById("timeToggle").checked,
@@ -144,7 +176,6 @@ document.getElementById("saveSettings").onclick=()=>{
       tasks:document.getElementById("tasksToggle").checked,
       music:document.getElementById("musicToggle").checked,
       aiTips:document.getElementById("aiTipsToggle").checked,
-      iframeWidget:document.getElementById("iframeToggle").checked,
       aiWidget:!document.getElementById("kidsModeToggle").checked
     }
   };
@@ -576,9 +607,9 @@ if(settings.widgets.music){
 
 if(settings.widgets.aiTips)createWidget("aiTips","<h3>AI Tips</h3><p>Helpful tips...</p>");
 
-if(settings.widgets.iframeWidget&&settings.iframeUrl){
-  createWidget("iframeWidget",`<iframe src="${settings.iframeUrl}"></iframe>`);
-}
+settings.iframes.forEach((url,i)=>{
+  createWidget("iframeWidget_"+i,`<iframe src="${url}"></iframe>`);
+});
 
 if(!settings.kidsMode){
   createWidget(
