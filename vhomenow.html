@@ -1,640 +1,226 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>V Home Now</title>
-<style>
-  :root{--bg-color:#eef1f6;--text-color:#111;--widget-bg:#ffffff;}
-  body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg-color);color:var(--text-color);overflow:hidden;}
-  .theme-red{--bg-color:#ffe5e5;--widget-bg:#ffffff;}
-  .theme-orange{--bg-color:#ffeede;--widget-bg:#ffffff;}
-  .theme-yellow{--bg-color:#fff9d6;--widget-bg:#ffffff;}
-  .theme-green{--bg-color:#e5ffe9;--widget-bg:#ffffff;}
-  .theme-blue{--bg-color:#e3f0ff;--widget-bg:#ffffff;}
-  .theme-indigo{--bg-color:#e6e6ff;--widget-bg:#ffffff;}
-  .theme-violet{--bg-color:#f3e6ff;--widget-bg:#ffffff;}
-  #settingsPanel{position:fixed;top:0;left:0;height:100vh;background:#ffffff;box-shadow:4px 0 12px rgba(0,0,0,0.15);padding:20px;overflow-y:auto;transition:transform .35s ease;z-index:999;width:clamp(260px,28vw,380px);}
-  #settingsPanel.hidden{transform:translateX(-100%);}
-  #settingsPanel h2{margin-top:0;}
-  #gearButton{position:fixed;top:15px;left:15px;background:#4a6cf7;color:#fff;border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;z-index:1000;box-shadow:0 4px 10px rgba(0,0,0,0.25);}
-  #dashboard{position:absolute;top:0;left:0;width:100%;height:100%;padding-left:clamp(260px,28vw,380px);transition:padding-left .35s ease;}
-  #settingsPanel.hidden + #dashboard{padding-left:0;}
-  .widget{position:absolute;width:240px;min-height:120px;background:var(--widget-bg);border-radius:12px;padding:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);cursor:grab;user-select:none;box-sizing:border-box;}
-  .widget:active{cursor:grabbing;}
-  .resize-handle{width:14px;height:14px;background:#4a6cf7;border-radius:4px;position:absolute;right:4px;bottom:4px;cursor:se-resize;}
-  iframe{width:100%;height:100%;border:none;border-radius:8px;}
-  .music-widget{display:flex;flex-direction:column;height:100%;box-sizing:border-box;}
-  .music-top{display:flex;gap:10px;margin-bottom:8px;}
-  .album-art{width:80px;height:80px;border-radius:8px;background:#d0d4e0;display:flex;align-items:center;justify-content:center;font-size:32px;color:#555;overflow:hidden;}
-  .album-art img{width:100%;height:100%;object-fit:cover;}
-  .music-info{flex:1;display:flex;flex-direction:column;justify-content:space-between;}
-  .track-name{font-weight:600;font-size:14px;margin-bottom:4px;}
-  .music-controls{display:flex;align-items:center;gap:8px;}
-  .music-controls button{border:none;background:#4a6cf7;color:#fff;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;}
-  .music-controls button:disabled{background:#9aa5e0;cursor:default;}
-  .progress-container{margin:6px 0;}
-  .progress-container input[type="range"]{width:100%;}
-  .time-labels{display:flex;justify-content:space-between;font-size:10px;color:#555;}
-  .playlist{flex:1;overflow-y:auto;margin-top:6px;border-top:1px solid #e0e3ee;padding-top:4px;font-size:12px;}
-  .playlist-title{font-weight:600;margin-bottom:4px;}
-  .playlist-item{padding:3px 4px;border-radius:4px;cursor:pointer;}
-  .playlist-item.active{background:#e2e6ff;font-weight:600;}
-  .playlist-item:hover{background:#f0f2ff;}
-  .music-actions{display:flex;gap:6px;margin-bottom:6px;}
-  .music-actions button{border:none;background:#e0e3ff;color:#333;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;}
-  .music-actions button:hover{background:#cfd4ff;}
-  .drop-zone{border:1px dashed #9aa5e0;border-radius:6px;padding:4px;text-align:center;font-size:11px;color:#555;margin-bottom:4px;}
-  .drop-zone.dragover{background:#eef0ff;}
-  .news-controls{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:4px;}
-  .news-controls button{border:none;background:#e0e3ff;color:#333;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;}
-  .news-controls button:hover{background:#cfd4ff;}
-  .news-item{margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #e0e3ee;}
-  .news-item a{text-decoration:none;color:#1a3ea5;}
-  .news-item a:hover{text-decoration:underline;}
-  .news-meta{font-size:10px;color:#666;}
-  .time-widget{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;height:100%;}
-</style>
-</head>
-<body>
-<div id="settingsPanel">
-  <h2>V Home Now Settings</h2>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V Home Now</title><style>
+:root{--bg:#eef1f6;--fg:#111;--wbg:#fff;--accent:#4a6cf7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--fg);overflow:hidden}
+.theme-red{--bg:#ffe5e5;--wbg:#fff}.theme-orange{--bg:#ffeede;--wbg:#fff}.theme-yellow{--bg:#fff9d6;--wbg:#fff}
+.theme-green{--bg:#e5ffe9;--wbg:#fff}.theme-blue{--bg:#e3f0ff;--wbg:#fff}.theme-indigo{--bg:#e6e6ff;--wbg:#fff}
+.theme-violet{--bg:#f3e6ff;--wbg:#fff}
+#settings{position:fixed;top:0;left:0;height:100vh;width:clamp(260px,28vw,360px);background:#fff;box-shadow:4px 0 12px rgba(0,0,0,.15);padding:16px;overflow-y:auto;z-index:9;transition:transform .3s}
+#settings.hidden{transform:translateX(-100%)}
+#gear{position:fixed;top:12px;left:12px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;z-index:10;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+#dash{position:absolute;top:0;left:0;width:100%;height:100%;padding-left:clamp(260px,28vw,360px);transition:padding-left .3s}
+#settings.hidden+#dash{padding-left:0}
+h2,h3,label,select,input,button{font-size:14px}
+h2{margin-bottom:8px}
+h3{margin:12px 0 6px}
+select,input[type=checkbox]{margin:4px 0}
+button{cursor:pointer}
+.widget{position:absolute;width:260px;min-height:130px;background:var(--wbg);border-radius:12px;padding:10px;box-shadow:0 4px 12px rgba(0,0,0,.15);cursor:grab;user-select:none}
+.widget:active{cursor:grabbing}
+.widget-title{font-size:13px;font-weight:600;margin-bottom:6px}
+.resize{position:absolute;right:4px;bottom:4px;width:14px;height:14px;border-radius:4px;background:var(--accent);cursor:se-resize}
+.time-body{display:flex;flex-direction:column;gap:4px}
+.time-main{font-size:26px;font-weight:700}
+.time-sub{font-size:13px;color:#555}
+.cal-body, .news-body, .tasks-body, .ai-body{font-size:13px}
+.tasks-list{margin-top:4px;max-height:160px;overflow-y:auto}
+.tasks-list div{display:flex;align-items:center;gap:4px;margin-bottom:2px}
+.tasks-list input[type=text]{width:100%;padding:3px 4px;font-size:12px}
+.tasks-add{display:flex;gap:4px;margin-top:4px}
+.tasks-add button{padding:3px 6px;font-size:12px;background:var(--accent);color:#fff;border:none;border-radius:4px}
+.news-body{max-height:200px;overflow-y:auto}
+.news-item{margin-bottom:6px;border-bottom:1px solid #e0e3ee;padding-bottom:4px}
+.news-item a{text-decoration:none;color:#1a3ea5;font-size:13px}
+.news-item a:hover{text-decoration:underline}
+.news-meta{font-size:11px;color:#666}
+.ai-body{max-height:200px;overflow-y:auto}
+.ai-tip{margin-bottom:6px;padding:6px;border-radius:6px;background:#f2f3ff;font-size:12px}
+.iframe-body, .android-body{width:100%;height:100%}
+.iframe-body iframe,.android-body iframe{width:100%;height:100%;border:none;border-radius:8px}
+#iframeList{font-size:12px;margin-top:6px}
+#iframeList div{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:4px}
+#iframeList span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#iframeList button{font-size:11px;padding:2px 4px}
+#saveBtn{margin-top:10px;padding:6px 10px;border:none;border-radius:6px;background:var(--accent);color:#fff;font-weight:600}
+</style></head><body>
+<div id="settings">
+  <h2>V Home Now</h2>
   <label>Theme:</label>
-  <select id="themeSelect">
-    <option value="red">Red</option>
-    <option value="orange">Orange</option>
-    <option value="yellow">Yellow</option>
-    <option value="green">Green</option>
-    <option value="blue">Blue</option>
-    <option value="indigo">Indigo</option>
-    <option value="violet">Violet</option>
+  <select id="themeSel">
+    <option value="red">Red</option><option value="orange">Orange</option><option value="yellow">Yellow</option>
+    <option value="green">Green</option><option value="blue">Blue</option><option value="indigo">Indigo</option><option value="violet">Violet</option>
+  </select><br><br>
+  <label>Font:</label>
+  <select id="fontSel">
+    <option value="Inter">Inter</option><option value="Arial">Arial</option><option value="Comic Sans MS">Comic Sans (Kids)</option>
   </select>
-  <br><br>
-  <label>Font Style:</label>
-  <select id="fontSelect">
-    <option value="Inter">Inter</option>
-    <option value="Arial">Arial</option>
-    <option value="Comic Sans MS">Comic Sans (Kids)</option>
-  </select>
-  <br><br>
   <h3>Widgets</h3>
-  <label><input type="checkbox" id="timeToggle"> Time</label><br>
-  <label><input type="checkbox" id="weatherToggle"> Weather</label><br>
-  <label><input type="checkbox" id="calendarToggle"> Calendar</label><br>
-  <label><input type="checkbox" id="newsToggle"> News</label><br>
-  <label><input type="checkbox" id="tasksToggle"> Tasks</label><br>
-  <label><input type="checkbox" id="musicToggle"> Music</label><br>
-  <label><input type="checkbox" id="aiTipsToggle"> AI Tips</label><br>
-  <br>
+  <label><input type="checkbox" id="wTime"> Time</label><br>
+  <label><input type="checkbox" id="wCal"> Calendar</label><br>
+  <label><input type="checkbox" id="wNews"> News</label><br>
+  <label><input type="checkbox" id="wTasks"> Tasks</label><br>
+  <label><input type="checkbox" id="wAi"> AI Tips</label><br>
+  <label><input type="checkbox" id="wAndroid"> Android Emulator</label>
   <h3>iFrames</h3>
-  <button id="addIframeBtn">Add iFrame</button>
-  <div id="iframeList" style="font-size:13px;margin-top:8px;"></div>
+  <button id="addIframe">Add iFrame</button>
+  <div id="iframeList"></div>
   <br>
-  <label><input type="checkbox" id="kidsModeToggle"> Kids Mode (Disable AI)</label>
-  <br><br>
-  <button id="saveSettings">Save Settings</button>
+  <label><input type="checkbox" id="kidsMode"> Kids Mode (disable AI tips)</label>
+  <button id="saveBtn">Save</button>
 </div>
-<div id="gearButton">⚙️</div>
-<div id="dashboard"></div>
+<div id="gear">⚙️</div>
+<div id="dash"></div>
 <script>
-let settings=JSON.parse(localStorage.getItem("vHomeSettings"))||{
-  theme:"blue",
-  font:"Inter",
-  widgets:{},
-  iframes:[],
-  kidsMode:false
-};
-if(!Array.isArray(settings.iframes))settings.iframes=[];
-let widgetPositions=JSON.parse(localStorage.getItem("vHomeWidgetPositions"))||{};
-let widgetSizes=JSON.parse(localStorage.getItem("vHomeWidgetSizes"))||{};
-const dashboard=document.getElementById("dashboard");
+let S=JSON.parse(localStorage.getItem("vHomeSettings"))||{theme:"blue",font:"Inter",widgets:{},iframes:[],kidsMode:0},
+P=JSON.parse(localStorage.getItem("vHomeWidgetPositions"))||{},
+Z=JSON.parse(localStorage.getItem("vHomeWidgetSizes"))||{},
+D=document.getElementById("dash"),
+G=id=>document.getElementById(id),
+ST=G("settings");
 
-function applyTheme(theme){
-  const themes=["red","orange","yellow","green","blue","indigo","violet"];
-  themes.forEach(t=>document.body.classList.remove("theme-"+t));
-  document.body.classList.add("theme-"+theme);
+function T(t){["red","orange","yellow","green","blue","indigo","violet"].forEach(c=>document.body.classList.remove("theme-"+c));document.body.classList.add("theme-"+t)}
+G("themeSel").value=S.theme;G("fontSel").value=S.font;document.body.style.fontFamily=S.font;T(S.theme);
+
+["wTime","wCal","wNews","wTasks","wAi","wAndroid"].forEach(k=>G(k).checked=S.widgets[k.replace("w","").toLowerCase()]||0);
+G("kidsMode").checked=S.kidsMode||0;
+
+function RIF(){
+ let L=G("iframeList");L.innerHTML="";
+ S.iframes.forEach((u,i)=>{
+  let d=document.createElement("div");
+  d.innerHTML=`<span>${u}</span><button data-i="${i}">X</button>`;
+  L.appendChild(d)
+ });
+ L.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  S.iframes.splice(+b.dataset.i,1);
+  localStorage.setItem("vHomeSettings",JSON.stringify(S));
+  location.reload()
+ })
 }
+RIF();
 
-document.getElementById("themeSelect").value=settings.theme||"blue";
-document.getElementById("fontSelect").value=settings.font;
-document.body.style.fontFamily=settings.font;
-applyTheme(settings.theme||"blue");
-
-document.getElementById("timeToggle").checked=settings.widgets.time||false;
-document.getElementById("weatherToggle").checked=settings.widgets.weather||false;
-document.getElementById("calendarToggle").checked=settings.widgets.calendar||false;
-document.getElementById("newsToggle").checked=settings.widgets.news||false;
-document.getElementById("tasksToggle").checked=settings.widgets.tasks||false;
-document.getElementById("musicToggle").checked=settings.widgets.music||false;
-document.getElementById("aiTipsToggle").checked=settings.widgets.aiTips||false;
-document.getElementById("kidsModeToggle").checked=settings.kidsMode||false;
-
-function renderIframeList(){
-  const list=document.getElementById("iframeList");
-  list.innerHTML="";
-  settings.iframes.forEach((url,i)=>{
-    const row=document.createElement("div");
-    row.style.marginBottom="6px";
-    row.innerHTML=`
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${url}</span>
-        <button data-i="${i}" class="removeIframeBtn" style="font-size:11px;">Remove</button>
-      </div>
-    `;
-    list.appendChild(row);
-  });
-  document.querySelectorAll(".removeIframeBtn").forEach(btn=>{
-    btn.onclick=()=>{
-      const index=parseInt(btn.dataset.i);
-      settings.iframes.splice(index,1);
-      localStorage.setItem("vHomeSettings",JSON.stringify(settings));
-      location.reload();
-    };
-  });
-}
-renderIframeList();
-
-document.getElementById("addIframeBtn").onclick=()=>{
-  const url=prompt("Enter iFrame URL:");
-  if(!url)return;
-  settings.iframes.push(url);
-  localStorage.setItem("vHomeSettings",JSON.stringify(settings));
-  location.reload();
+G("addIframe").onclick=()=>{
+ let u=prompt("iFrame URL:");if(!u)return;
+ S.iframes.push(u);
+ localStorage.setItem("vHomeSettings",JSON.stringify(S));
+ location.reload()
 };
 
-document.getElementById("saveSettings").onclick=()=>{
-  settings={
-    theme:document.getElementById("themeSelect").value,
-    font:document.getElementById("fontSelect").value,
-    iframes:settings.iframes,
-    kidsMode:document.getElementById("kidsModeToggle").checked,
-    widgets:{
-      time:document.getElementById("timeToggle").checked,
-      weather:document.getElementById("weatherToggle").checked,
-      calendar:document.getElementById("calendarToggle").checked,
-      news:document.getElementById("newsToggle").checked,
-      tasks:document.getElementById("tasksToggle").checked,
-      music:document.getElementById("musicToggle").checked,
-      aiTips:document.getElementById("aiTipsToggle").checked,
-      aiWidget:!document.getElementById("kidsModeToggle").checked
-    }
-  };
-  localStorage.setItem("vHomeSettings",JSON.stringify(settings));
-  location.reload();
+G("saveBtn").onclick=()=>{
+ S.theme=G("themeSel").value;
+ S.font=G("fontSel").value;
+ S.kidsMode=G("kidsMode").checked?1:0;
+ S.widgets={
+  time:G("wTime").checked,
+  calendar:G("wCal").checked,
+  news:G("wNews").checked,
+  tasks:G("wTasks").checked,
+  aiTips:G("wAi").checked&&!S.kidsMode,
+  android:G("wAndroid").checked
+ };
+ localStorage.setItem("vHomeSettings",JSON.stringify(S));
+ location.reload()
 };
 
-const settingsPanel=document.getElementById("settingsPanel");
-const gearButton=document.getElementById("gearButton");
-gearButton.onclick=()=>{settingsPanel.classList.toggle("hidden");};
+G("gear").onclick=()=>ST.classList.toggle("hidden");
 
-function createWidget(id,contentHTML){
-  const widget=document.createElement("div");
-  widget.className="widget";
-  widget.id=id;
-  widget.innerHTML=contentHTML;
-  const pos=widgetPositions[id]||{x:200,y:200};
-  widget.style.left=pos.x+"px";
-  widget.style.top=pos.y+"px";
-  const size=widgetSizes[id]||{w:300,h:300};
-  widget.style.width=size.w+"px";
-  widget.style.height=size.h+"px";
-  enableDragging(widget);
-  enableResizing(widget);
-  dashboard.appendChild(widget);
-  return widget;
+function W(id,h){
+ let w=document.createElement("div");
+ w.className="widget";w.id=id;w.innerHTML=h;
+ let p=P[id]||{x:200,y:200},s=Z[id]||{w:260,h:200};
+ w.style.left=p.x+"px";w.style.top=p.y+"px";
+ w.style.width=s.w+"px";w.style.height=s.h+"px";
+ DR(w);RS(w);D.appendChild(w);return w
 }
 
-function enableDragging(el){
-  let offsetX,offsetY,isDown=false;
-  el.addEventListener("mousedown",e=>{
-    if(e.target.classList.contains("resize-handle"))return;
-    isDown=true;
-    offsetX=e.clientX-el.offsetLeft;
-    offsetY=e.clientY-el.offsetTop;
-    el.style.zIndex=9999;
-  });
-  document.addEventListener("mousemove",e=>{
-    if(!isDown)return;
-    el.style.left=(e.clientX-offsetX)+"px";
-    el.style.top=(e.clientY-offsetY)+"px";
-  });
-  document.addEventListener("mouseup",()=>{
-    if(!isDown)return;
-    isDown=false;
-    el.style.zIndex=1;
-    widgetPositions[el.id]={x:el.offsetLeft,y:el.offsetTop};
-    localStorage.setItem("vHomeWidgetPositions",JSON.stringify(widgetPositions));
-  });
+function DR(w){
+ let m=0,dx,dy;
+ w.onmousedown=e=>{
+  if(e.target.classList.contains("resize"))return;
+  m=1;dx=e.clientX-w.offsetLeft;dy=e.clientY-w.offsetTop;w.style.zIndex=99
+ };
+ document.onmousemove=e=>{if(m){w.style.left=e.clientX-dx+"px";w.style.top=e.clientY-dy+"px"}};
+ document.onmouseup=()=>{if(m){m=0;w.style.zIndex=1;P[w.id]={x:w.offsetLeft,y:w.offsetTop};localStorage.setItem("vHomeWidgetPositions",JSON.stringify(P))}}
 }
 
-function enableResizing(el){
-  const handle=document.createElement("div");
-  handle.className="resize-handle";
-  el.appendChild(handle);
-  let isResizing=false;
-  handle.addEventListener("mousedown",e=>{
-    isResizing=true;
-    e.stopPropagation();
-  });
-  document.addEventListener("mousemove",e=>{
-    if(!isResizing)return;
-    const newW=Math.max(300,e.clientX-el.offsetLeft);
-    const newH=Math.max(300,e.clientY-el.offsetTop);
-    el.style.width=newW+"px";
-    el.style.height=newH+"px";
-  });
-  document.addEventListener("mouseup",()=>{
-    if(!isResizing)return;
-    isResizing=false;
-    widgetSizes[el.id]={w:el.offsetWidth,h:el.offsetHeight};
-    localStorage.setItem("vHomeWidgetSizes",JSON.stringify(widgetSizes));
-  });
+function RS(w){
+ let h=document.createElement("div"),r=0;
+ h.className="resize";w.appendChild(h);
+ h.onmousedown=e=>{r=1;e.stopPropagation()};
+ document.onmousemove=e=>{if(r){w.style.width=Math.max(200,e.clientX-w.offsetLeft)+"px";w.style.height=Math.max(150,e.clientY-w.offsetTop)+"px"}};
+ document.onmouseup=()=>{if(r){r=0;Z[w.id]={w:w.offsetWidth,h:w.offsetHeight};localStorage.setItem("vHomeWidgetSizes",JSON.stringify(Z))}}
 }
 
-function formatTime(sec){
-  if(isNaN(sec))return"0:00";
-  const m=Math.floor(sec/60);
-  const s=Math.floor(sec%60).toString().padStart(2,"0");
-  return`${m}:${s}`;
+function TM(w){
+ let a=w.querySelector(".tm"),b=w.querySelector(".td");
+ function U(){
+  let d=new Date,h=d.getHours(),m=(""+d.getMinutes()).padStart(2,"0"),ap=h>=12?"PM":"AM";
+  h=h%12||12;a.textContent=h+":"+m+" "+ap;
+  b.textContent=d.toLocaleDateString(void 0,{weekday:"long",month:"short",day:"numeric"})
+ }
+ U();setInterval(U,1e3)
 }
 
-function initTimeWidget(widget){
-  const timeEl=widget.querySelector(".time-display");
-  const dateEl=widget.querySelector(".date-display");
-  function updateClock(){
-    const now=new Date();
-    let hours=now.getHours();
-    const minutes=now.getMinutes().toString().padStart(2,"0");
-    const ampm=hours>=12?"PM":"AM";
-    hours=hours%12||12;
-    timeEl.textContent=`${hours}:${minutes} ${ampm}`;
-    const options={weekday:"long",month:"short",day:"numeric"};
-    dateEl.textContent=now.toLocaleDateString(undefined,options);
-  }
-  updateClock();
-  setInterval(updateClock,1000);
+async function NW(w){
+ let L=w.querySelector(".nb"),
+ F=S.kidsMode?[["NR","https://www.bbc.co.uk/newsround/feeds/rss"],["DOGO","https://www.dogonews.com/feed"]]:
+ [["BBC","https://feeds.bbci.co.uk/news/world/rss.xml"],["REU","https://feeds.reuters.com/Reuters/worldNews"],["TC","https://techcrunch.com/feed/"]],
+ A=[];
+ L.innerHTML="Loading...";
+ for(let f of F){
+  try{
+   let r=await fetch("https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(f[1])),
+   j=await r.json();
+   (j.items||[]).forEach(x=>A.push({t:x.title,l:x.link,d:x.pubDate,s:f[0]}))
+  }catch{}
+ }
+ A.sort((a,b)=>new Date(b.d)-new Date(a.d));
+ L.innerHTML="";
+ A.slice(0,20).forEach(n=>{
+  let d=document.createElement("div");
+  d.className="ni";
+  d.innerHTML=`<a href="${n.l}" target="_blank">${n.t}</a><div class="nm">${n.s} • ${new Date(n.d).toLocaleString()}</div>`;
+  L.appendChild(d)
+ })
 }
 
-function initMusicWidget(widget){
-  const audio=new Audio();
-  let playlist=[];
-  let currentIndex=-1;
-  let isSeeking=false;
-  const albumArtBox=widget.querySelector(".album-art");
-  const albumArtImg=widget.querySelector(".album-art img");
-  const trackNameEl=widget.querySelector(".track-name");
-  const playBtn=widget.querySelector(".btn-play");
-  const pauseBtn=widget.querySelector(".btn-pause");
-  const nextBtn=widget.querySelector(".btn-next");
-  const prevBtn=widget.querySelector(".btn-prev");
-  const progressRange=widget.querySelector(".progress-range");
-  const currentTimeEl=widget.querySelector(".time-current");
-  const durationEl=widget.querySelector(".time-duration");
-  const playlistContainer=widget.querySelector(".playlist-list");
-  const fileInput=widget.querySelector(".file-input");
-  const imgInput=widget.querySelector(".img-input");
-  const uploadBtn=widget.querySelector(".btn-upload");
-  const uploadImgBtn=widget.querySelector(".btn-upload-img");
-  const dropZone=widget.querySelector(".drop-zone");
-
-  function renderPlaylist(){
-    playlistContainer.innerHTML="";
-    playlist.forEach((track,index)=>{
-      const item=document.createElement("div");
-      item.className="playlist-item"+(index===currentIndex?" active":"");
-      item.textContent=track.name;
-      item.onclick=()=>{loadTrack(index);playCurrent();};
-      playlistContainer.appendChild(item);
-    });
-  }
-
-  function loadTrack(index){
-    if(index<0||index>=playlist.length)return;
-    currentIndex=index;
-    const track=playlist[index];
-    audio.src=track.url;
-    trackNameEl.textContent=track.name;
-    if(track.albumArt){
-      albumArtImg.src=track.albumArt;
-      albumArtImg.style.display="block";
-      albumArtBox.querySelector(".album-placeholder").style.display="none";
-    }else{
-      albumArtImg.style.display="none";
-      albumArtBox.querySelector(".album-placeholder").style.display="block";
-    }
-    renderPlaylist();
-  }
-
-  function playCurrent(){
-    if(currentIndex===-1&&playlist.length>0){loadTrack(0);}
-    if(currentIndex===-1)return;
-    audio.play();
-  }
-  function pauseCurrent(){audio.pause();}
-
-  playBtn.onclick=()=>playCurrent();
-  pauseBtn.onclick=()=>pauseCurrent();
-  nextBtn.onclick=()=>{
-    if(playlist.length===0)return;
-    const nextIndex=(currentIndex+1)%playlist.length;
-    loadTrack(nextIndex);playCurrent();
-  };
-  prevBtn.onclick=()=>{
-    if(playlist.length===0)return;
-    const prevIndex=(currentIndex-1+playlist.length)%playlist.length;
-    loadTrack(prevIndex);playCurrent();
-  };
-
-  audio.addEventListener("timeupdate",()=>{
-    if(isSeeking)return;
-    progressRange.value=audio.currentTime||0;
-    currentTimeEl.textContent=formatTime(audio.currentTime||0);
-    durationEl.textContent=formatTime(audio.duration||0);
-    progressRange.max=audio.duration||0;
-  });
-  audio.addEventListener("loadedmetadata",()=>{
-    progressRange.max=audio.duration||0;
-    durationEl.textContent=formatTime(audio.duration||0);
-  });
-  audio.addEventListener("ended",()=>{
-    if(playlist.length===0)return;
-    const nextIndex=(currentIndex+1)%playlist.length;
-    loadTrack(nextIndex);playCurrent();
-  });
-
-  progressRange.addEventListener("mousedown",()=>{isSeeking=true;});
-  progressRange.addEventListener("mouseup",e=>{
-    const val=Number(e.target.value);
-    audio.currentTime=val;
-    isSeeking=false;
-  });
-  progressRange.addEventListener("input",e=>{
-    if(!isSeeking)return;
-    const val=Number(e.target.value);
-    currentTimeEl.textContent=formatTime(val);
-  });
-
-  uploadBtn.onclick=()=>fileInput.click();
-  uploadImgBtn.onclick=()=>imgInput.click();
-
-  fileInput.addEventListener("change",e=>{
-    handleFiles(e.target.files);
-    fileInput.value="";
-  });
-
-  imgInput.addEventListener("change",e=>{
-    const file=e.target.files[0];
-    if(!file)return;
-    const reader=new FileReader();
-    reader.onload=()=>{
-      if(currentIndex!==-1){
-        playlist[currentIndex].albumArt=reader.result;
-        albumArtImg.src=reader.result;
-        albumArtImg.style.display="block";
-        albumArtBox.querySelector(".album-placeholder").style.display="none";
-      }
-    };
-    reader.readAsDataURL(file);
-    imgInput.value="";
-  });
-
-  function handleFiles(files){
-    Array.from(files).forEach(file=>{
-      if(!file.type.startsWith("audio/"))return;
-      const url=URL.createObjectURL(file);
-      const track={name:file.name,url,albumArt:null};
-      playlist.push(track);
-      if(window.jsmediatags){
-        window.jsmediatags.read(file,{
-          onSuccess:function(tag){
-            const picture=tag.tags.picture;
-            if(picture&&picture.data&&picture.format){
-              let base64String="";
-              const data=picture.data;
-              for(let i=0;i<data.length;i++){base64String+=String.fromCharCode(data[i]);}
-              const imageUrl="data:"+picture.format+";base64,"+btoa(base64String);
-              track.albumArt=imageUrl;
-              if(playlist.indexOf(track)===currentIndex){
-                albumArtImg.src=imageUrl;
-                albumArtImg.style.display="block";
-                albumArtBox.querySelector(".album-placeholder").style.display="none";
-              }
-            }else{
-              alert("This file has no album art. Click 'Upload Image' to add one.");
-            }
-          },
-          onError:function(){
-            alert("This file has no album art. Click 'Upload Image' to add one.");
-          }
-        });
-      }else{
-        alert("This file has no album art. Click 'Upload Image' to add one.");
-      }
-    });
-    renderPlaylist();
-    if(currentIndex===-1&&playlist.length>0){loadTrack(0);}
-  }
-
-  ["dragenter","dragover","dragleave","drop"].forEach(eventName=>{
-    dropZone.addEventListener(eventName,e=>{
-      e.preventDefault();e.stopPropagation();
-    });
-  });
-  ["dragenter","dragover"].forEach(eventName=>{
-    dropZone.addEventListener(eventName,()=>{dropZone.classList.add("dragover");});
-  });
-  ["dragleave","drop"].forEach(eventName=>{
-    dropZone.addEventListener(eventName,()=>{dropZone.classList.remove("dragover");});
-  });
-  dropZone.addEventListener("drop",e=>{
-    const dt=e.dataTransfer;
-    const files=dt.files;
-    handleFiles(files);
-  });
+function TK(w){
+ let L=w.querySelector(".tl"),I=w.querySelector(".ti"),B=w.querySelector(".tb"),
+ A=JSON.parse(localStorage.getItem("vTasks")||"[]");
+ function R(){
+  L.innerHTML="";
+  A.forEach((t,i)=>{
+   let d=document.createElement("div");
+   d.innerHTML=`<input type="checkbox" ${t.d?"checked":""}><span>${t.t}</span>`;
+   d.querySelector("input").onchange=e=>{
+    A[i].d=e.target.checked;localStorage.setItem("vTasks",JSON.stringify(A));R()
+   };
+   L.appendChild(d)
+  })
+ }
+ R();
+ B.onclick=()=>{if(I.value.trim()){A.push({t:I.value,d:0});I.value="";localStorage.setItem("vTasks",JSON.stringify(A));R()}}
 }
 
-function initNewsWidget(widget,kidsModeOn){
-  const listEl=widget.querySelector(".news-list");
-  const statusEl=widget.querySelector(".news-status");
-  const refreshBtn=widget.querySelector(".news-refresh");
-
-  const normalFeeds=[
-    {name:"BBC World",url:"https://feeds.bbci.co.uk/news/world/rss.xml"},
-    {name:"Reuters World",url:"https://feeds.reuters.com/Reuters/worldNews"},
-    {name:"CBC Canada",url:"https://www.cbc.ca/cmlink/rss-canada"},
-    {name:"TechCrunch",url:"https://techcrunch.com/feed/"},
-    {name:"Wired",url:"https://www.wired.com/feed/rss"},
-    {name:"IGN",url:"https://feeds.feedburner.com/ign/all"},
-    {name:"Nintendo Life",url:"https://www.nintendolife.com/feeds/latest"}
-  ];
-  const kidsFeeds=[
-    {name:"BBC Newsround",url:"https://www.bbc.co.uk/newsround/feeds/rss"},
-    {name:"DOGO News",url:"https://www.dogonews.com/feed"},
-    {name:"Time for Kids",url:"https://www.timeforkids.com/feed/"}
-  ];
-  const feedsToUse=kidsModeOn?kidsFeeds:normalFeeds;
-
-  async function fetchFeed(feed){
-    const apiUrl="https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(feed.url);
-    const res=await fetch(apiUrl);
-    if(!res.ok)throw new Error("Failed "+feed.name);
-    const data=await res.json();
-    return(data.items||[]).map(item=>({
-      title:item.title,
-      link:item.link,
-      date:item.pubDate||item.pubDate_raw||item.pubDate_tz||item.pubDate,
-      source:feed.name
-    }));
-  }
-
-  async function loadNews(){
-    statusEl.textContent=kidsModeOn?"Loading kid-friendly news...":"Loading latest news...";
-    listEl.innerHTML="";
-    try{
-      const all=await Promise.allSettled(feedsToUse.map(feed=>fetchFeed(feed)));
-      let items=[];
-      all.forEach(result=>{
-        if(result.status==="fulfilled"){items=items.concat(result.value);}
-      });
-      if(items.length===0){
-        statusEl.textContent="No news available right now.";
-        return;
-      }
-      items.sort((a,b)=>new Date(b.date)-new Date(a.date));
-      items=items.slice(0,20);
-      listEl.innerHTML="";
-      items.forEach(item=>{
-        const div=document.createElement("div");
-        div.className="news-item";
-        div.innerHTML=`
-          <a href="${item.link}" target="_blank" rel="noopener noreferrer">
-            ${item.title}
-          </a>
-          <div class="news-meta">
-            ${item.source} • ${new Date(item.date).toLocaleString()}
-          </div>
-        `;
-        listEl.appendChild(div);
-      });
-      statusEl.textContent=kidsModeOn?"Kid-friendly news loaded.":"News updated.";
-    }catch(e){
-      console.error(e);
-      statusEl.textContent="Error loading news.";
-    }
-  }
-
-  refreshBtn.onclick=loadNews;
-  loadNews();
+function AI(w){
+ let L=w.querySelector(".ab"),
+ T=["Group widgets neatly.","Embed apps with iFrames.","Resize panels freely.","Kids Mode hides advanced items."];
+ L.innerHTML=T.map(t=>`<div class="at">${t}</div>`).join("")
 }
 
-/* RENDER WIDGETS */
-if(settings.widgets.time){
-  const timeWidget=createWidget(
-    "time",
-    `
-    <div class="time-widget">
-      <div class="time-display" style="font-size:42px;font-weight:700;"></div>
-      <div class="date-display" style="font-size:18px;opacity:0.8;"></div>
-    </div>
-    `
-  );
-  initTimeWidget(timeWidget);
+function AND(w){
+ let U="https://appetize.io/embed/b_kyqueia5m6h2xx4cestlaanu3y?device=pixeltablet&launchUrl=exp%3A%2F%2Fu.expo.dev%2F933fd9c0-1666-11e7-afca-d980795c5824%3Fruntime-version%3Dexposdk%253A53.0.0%26channel-name%3Dproduction%26snack%3D%2540viaan_isaac%252Fwemulate%26snack-channel%3DKmYAIEGFje&params=%7B%22EXDevMenuDisableAutoLaunch%22%3Atrue%2C%22EXKernelDisableNuxDefaultsKey%22%3Atrue%7D&appearance=light&deviceColor=black&scale=auto&orientation=portrait&centered=both";
+ w.innerHTML=`<div class="android-body"><iframe src="${U}"></iframe></div><div class="resize"></div>`
 }
 
-if(settings.widgets.weather)createWidget("weather","<h3>Weather</h3><p>Weather info...</p>");
-if(settings.widgets.calendar)createWidget("calendar","<h3>Calendar</h3><p>Your events...</p>");
+if(S.widgets.time){let w=W("time",`<div class="tm"></div><div class="td"></div><div class="resize"></div>`);TM(w)}
+if(S.widgets.calendar){W("cal",`<div class="widget-title">Calendar</div><div>Events...</div><div class="resize"></div>`)}
+if(S.widgets.news){let w=W("news",`<div class="widget-title">News</div><div class="nb"></div><div class="resize"></div>`);NW(w)}
+if(S.widgets.tasks){let w=W("tasks",`<div class="widget-title">Tasks</div><div class="tl"></div><div class="tasks-add"><input class="ti"><button class="tb">Add</button></div><div class="resize"></div>`);TK(w)}
+if(S.widgets.aiTips&&!S.kidsMode){let w=W("ai",`<div class="widget-title">AI Tips</div><div class="ab"></div><div class="resize"></div>`);AI(w)}
+if(S.widgets.android){let w=W("android",`<div class="android-body"></div><div class="resize"></div>`);AND(w)}
 
-if(settings.widgets.news){
-  const newsWidget=createWidget(
-    "news",
-    `
-    <h3>News</h3>
-    <div class="news-controls">
-      <button class="news-refresh">Refresh</button>
-      <span class="news-status" style="font-size:11px;color:#555;">Loading...</span>
-    </div>
-    <div class="news-list" style="margin-top:6px;max-height:100%;overflow-y:auto;font-size:12px;"></div>
-    `
-  );
-  initNewsWidget(newsWidget,settings.kidsMode);
-}
-
-if(settings.widgets.tasks)createWidget("tasks","<h3>Tasks</h3><p>Your tasks...</p>");
-
-if(settings.widgets.music){
-  const musicWidget=createWidget(
-    "music",
-    `
-    <div class="music-widget">
-      <div class="music-actions">
-        <button class="btn-upload">Add Songs</button>
-        <button class="btn-upload-img">Upload Image</button>
-      </div>
-      <div class="drop-zone">Drag & drop audio files here</div>
-      <div class="music-top">
-        <div class="album-art">
-          <span class="album-placeholder">🎵</span>
-          <img style="display:none;" />
-        </div>
-        <div class="music-info">
-          <div class="track-name">No track loaded</div>
-          <div class="music-controls">
-            <button class="btn-prev">⏮</button>
-            <button class="btn-play">▶</button>
-            <button class="btn-pause">⏸</button>
-            <button class="btn-next">⏭</button>
-          </div>
-        </div>
-      </div>
-      <div class="progress-container">
-        <input type="range" class="progress-range" min="0" value="0" />
-        <div class="time-labels">
-          <span class="time-current">0:00</span>
-          <span class="time-duration">0:00</span>
-        </div>
-      </div>
-      <div class="playlist">
-        <div class="playlist-title">Playlist:</div>
-        <div class="playlist-list"></div>
-      </div>
-      <input type="file" class="file-input" accept="audio/*" multiple style="display:none;" />
-      <input type="file" class="img-input" accept="image/*" style="display:none;" />
-    </div>
-    `
-  );
-  initMusicWidget(musicWidget);
-}
-
-if(settings.widgets.aiTips)createWidget("aiTips","<h3>AI Tips</h3><p>Helpful tips...</p>");
-
-settings.iframes.forEach((url,i)=>{
-  createWidget("iframeWidget_"+i,`<iframe src="${url}"></iframe>`);
-});
-
-if(!settings.kidsMode){
-  createWidget(
-    "aiWidget",
-    `<iframe 
-      src="https://chatbot.getmindpal.com/bluelive"
-      allow="clipboard-read; clipboard-write; microphone"
-      style="width:100%;height:100%;min-height:300px;"
-    ></iframe>`
-    /* ANDROID EMULATOR WIDGET */
-const androidURL = "https://appetize.io/embed/b_kyqueia5m6h2xx4cestlaanu3y?device=pixeltablet&launchUrl=exp%3A%2F%2Fu.expo.dev%2F933fd9c0-1666-11e7-afca-d980795c5824%3Fruntime-version%3Dexposdk%253A53.0.0%26channel-name%3Dproduction%26snack%3D%2540viaan_isaac%252Fwemulate%26snack-channel%3DKmYAIEGFje&params=%7B%22EXDevMenuDisableAutoLaunch%22%3Atrue%2C%22EXKernelDisableNuxDefaultsKey%22%3Atrue%7D&appearance=light&deviceColor=black&scale=auto&orientation=portrait&centered=both";
-
-createWidget(
-  "androidEmulator",
-  `<iframe src="${androidURL}"></iframe>`
-);
-
-  );
-}
-
-(function loadJsMediaTags(){
-  const script=document.createElement("script");
-  script.src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js";
-  document.head.appendChild(script);
-})();
+S.iframes.forEach((u,i)=>W("if"+i,`<div class="iframe-body"><iframe src="${u}"></iframe></div><div class="resize"></div>`));
 </script>
-</body>
-</html>
+
+</body></html>
